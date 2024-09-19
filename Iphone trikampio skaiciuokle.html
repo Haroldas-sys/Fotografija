@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trikampio skaičiuoklė</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label, input {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        p {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Haroldo trikampio skaičiuoklė v3</h2>
+        <label for="H">Aukštis (H)</label>
+        <input type="number" id="H" step="any" placeholder="Įveskite aukštį (metrais)">
+
+        <label for="D">Atstumas (D)</label>
+        <input type="number" id="D" step="any" placeholder="Įveskite atstumą (metrais)">
+
+        <label for="alpha">Kampas (α) laipsniais</label>
+        <input type="number" id="alpha" step="any" placeholder="Įveskite kampą (laipsniais)">
+
+        <button type="button" id="calculateButton">Skaičiuoti</button>
+
+        <p id="result"></p>
+    </div>
+
+    <script>
+        // Gaudome klaidas
+        window.onerror = function(message, source, lineno, colno, error) {
+            alert('JavaScript klaida: ' + message + '\nEilutė: ' + lineno + ', Stulpelis: ' + colno);
+        };
+
+        function toRadians(degrees) {
+            return degrees * (Math.PI / 180);
+        }
+
+        function toDegrees(radians) {
+            return radians * (180 / Math.PI);
+        }
+
+        function calculate() {
+            alert('Funkcija calculate() buvo iškviesta');
+            try {
+                var H_value = document.getElementById('H').value;
+                var D_value = document.getElementById('D').value;
+                var alpha_value = document.getElementById('alpha').value;
+
+                // Pakeičiame kablelius į taškus
+                H_value = H_value.replace(',', '.');
+                D_value = D_value.replace(',', '.');
+                alpha_value = alpha_value.replace(',', '.');
+
+                // Konvertuojame į skaičius
+                var H = parseFloat(H_value);
+                var D = parseFloat(D_value);
+                var alpha = parseFloat(alpha_value);
+                var result = document.getElementById('result');
+
+                alert(`H: ${H}, D: ${D}, α: ${alpha}`);
+
+                if (!isNaN(H) && !isNaN(D) && H > 0 && D > 0) {
+                    // Jei turime H ir D, skaičiuojame kampą
+                    alpha = toDegrees(Math.atan(H / D));
+                    result.textContent = `Kampas α: ${alpha.toFixed(2)}°`;
+                } else if (!isNaN(H) && !isNaN(alpha) && H > 0 && alpha > 0) {
+                    // Jei turime H ir kampą, skaičiuojame D
+                    D = H / Math.tan(toRadians(alpha));
+                    result.textContent = `Atstumas D: ${D.toFixed(2)} m`;
+                } else if (!isNaN(D) && !isNaN(alpha) && D > 0 && alpha > 0) {
+                    // Jei turime D ir kampą, skaičiuojame H
+                    H = D * Math.tan(toRadians(alpha));
+                    result.textContent = `Aukštis H: ${H.toFixed(2)} m`;
+                } else {
+                    result.textContent = 'Įveskite bent dvi reikšmes.';
+                }
+            } catch (error) {
+                alert('Įvyko klaida: ' + error.message);
+            }
+        }
+
+        // Pridedame įvykio klausiklį mygtukui
+        document.getElementById('calculateButton').addEventListener('click', calculate);
+    </script>
+</body>
+</html>
